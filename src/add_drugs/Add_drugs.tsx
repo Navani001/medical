@@ -55,7 +55,7 @@ function Add_drugs() {
       <div className="w-full h-[90%]  flex items-center justify-center">
         <div className="w-[95%] h-[91%] ">
           <div className="w-full h-[7%]  border-2 border-gr rounded-lg flex justify-between">
-            <FreeSoloCreateOption />
+            <FreeSoloCreateOption id={data}/>
 
             {/* <input
               type="text"
@@ -89,7 +89,7 @@ function Add_drugs() {
             Selected Drugs (3)
           </div>
           <div className="w-full h-[87%] ">
-            <BasicTable />
+            <BasicTable id={data}/>
           </div>
         </div>
       </div>

@@ -81,9 +81,7 @@ function Rxtable() {
     const id = add_r(name);
     Navigate("/add_drugs", { state: id });
   };
-  const add_drug=()=>{
-    Navigate("/add_drugs", { state: selected_rx });
-  }
+
   const handlefilter = async () => {
     console.log(filter);
     const filtered_rx_list: rx_list_element[] = await rx_list.filter((rx) =>
@@ -132,11 +130,9 @@ function Rxtable() {
                   set_show_cre_notu(true);
                 }}
               >
-                
                 <AddCircleOutlineIcon
                   style={{ fontSize: "28px" }}
                   className="text-[#007965]"
-                
                 ></AddCircleOutlineIcon>
               </div>
             </div>

@@ -18,7 +18,7 @@ interface drug_list{
     add_drug: () =>void;
     
   }
-export default function FreeSoloCreateOption() {
+export default function FreeSoloCreateOption({id}:{id:number}) {
     const [textfiels_value,settextfiels_value]=React.useState("")
     const handletextfieldchange=(event:any)=>{
         settextfiels_value(event.target.value)
@@ -33,7 +33,7 @@ export default function FreeSoloCreateOption() {
       console.log('Selected:', value);
       
     }
-    add_drug(value,5)
+    add_drug(value,id)
  settextfiels_value("")
   };
   

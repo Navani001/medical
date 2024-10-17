@@ -7,6 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useBookStore } from '../stores/rx.tsx'; // Assuming the correct path
+import { convertToTitleCase } from '../functions/Title.tsx';
 
 // Define interfaces for the data structure
 interface Dose {
@@ -62,10 +63,10 @@ const columns = [
     cell: info => {
       const dose = info.getValue() as Dose;
       return (
-        <div>
-          {dose.is_morning && <p>Morning: {dose.morning_dose}</p>}
-          {dose.is_afternon && <p>Afternoon: {dose.afternoon_dose}</p>}
-          {dose.is_evening && <p>Evening: {dose.evening_dose}</p>}
+        <div className='text-[#4D4D4D]'>
+          {dose.is_morning ? <span>1</span>:<span>0</span>}-
+          {dose.is_afternon? <span>1</span>:<span>0</span>}-
+          {dose.is_evening ? <span>1</span>:<span>0</span>}
         </div>
       );
     },
@@ -76,9 +77,9 @@ const columns = [
       const time = info.getValue() as Time;
       return (
         <div>
-          <p>Time: {time.time}</p>
-          <p>Type: {time.time_type}</p>
-          <p>Take Type: {time.take_type}</p>
+          <span className='text-[#4D4D4D]'>{time.time} min, {convertToTitleCase(time.time_type)},{time.take_type?"before":"after"}</span>
+        
+          
         </div>
       );
     },
@@ -89,15 +90,15 @@ const columns = [
       const duration = info.getValue() as Duration;
       return (
         <div>
-          <p>Days: {duration.days}</p>
-          <p>Nose: {duration.nose}</p>
+          <span className='text-[#4D4D4D]'>{duration.days} days, {duration.nose} nos</span>
+       
         </div>
       );
     },
   }),
 ];
 
-export default function BasicTable() {
+export default function BasicTable({id}:{id:number}) {
   const rx_selector = useBookStore((state) => state.drug_list_selector);
   const rerender=useBookStore((state)=>state.rx)
   console.log(rx_selector)

@@ -111,7 +111,7 @@ export const useBookStore = create(
       add_rx: (rx: string) => {
         console.log("created");
         const rx_create = {
-          id: 5,
+          id: 4,
           name: rx,
           no_of_drug: 0,
           isactive: false,
