@@ -8,7 +8,7 @@ import UnstyledSwitchIntroduction from "./switch/switch";
 import Rename from "./dialog/rename";
 import { useBookStore } from "../src/stores/rx.tsx";
 import Drug_list from "./Drug_list.tsx";
-import {convertToTitleCase} from "../src/functions/Title.tsx"
+import { convertToTitleCase } from "../src/functions/Title.tsx";
 import { useNavigate } from "react-router-dom";
 
 interface dose {
@@ -62,9 +62,9 @@ const button = () => {
 };
 
 function Rxtable() {
-  const Navigate=useNavigate()
- 
-  const [selected_rx,set_selected_rx]=useState<number>(0)
+  const Navigate = useNavigate();
+
+  const [selected_rx, set_selected_rx] = useState<number>(0);
   const rx_list = useBookStore((state) => state.rx);
   const rename = useBookStore((state) => state.rename);
   const add_r = useBookStore((state) => state.add_rx);
@@ -77,10 +77,13 @@ function Rxtable() {
   console.log(rx_list);
   const [filteredrx, setfilteredrx] = useState<rx_list_element[]>(rx_list);
   const [filter, setfilter] = useState<string>("");
-const add_rx=(name:string)=>{
-  const id=add_r(name)
-  Navigate("/add_drugs",{state:id})
-}
+  const add_rx = (name: string) => {
+    const id = add_r(name);
+    Navigate("/add_drugs", { state: id });
+  };
+  const add_drug=()=>{
+    Navigate("/add_drugs", { state: selected_rx });
+  }
   const handlefilter = async () => {
     console.log(filter);
     const filtered_rx_list: rx_list_element[] = await rx_list.filter((rx) =>
@@ -129,9 +132,11 @@ const add_rx=(name:string)=>{
                   set_show_cre_notu(true);
                 }}
               >
+                
                 <AddCircleOutlineIcon
-                  style={{fontSize:"28px"}}
+                  style={{ fontSize: "28px" }}
                   className="text-[#007965]"
+                
                 ></AddCircleOutlineIcon>
               </div>
             </div>
@@ -156,45 +161,61 @@ const add_rx=(name:string)=>{
             <div className="w-full h-[86%] overflow-y-scroll scrollbar-width-none">
               {filteredrx.map((rx, index) => (
                 <div
-
                   key={index}
-                  className={selected_rx==index?"w-full h-[12%]  flex justify-between items-center border-b-2 border-gr border-dotted ":"w-full h-[12%]  flex justify-between items-center border-b-2 border-gr border-dotted "}
-                  onClick={()=>{
+                  className={
+                    selected_rx == index
+                      ? "w-full h-[12%]  flex justify-between items-center border-b-2 border-gr border-dotted "
+                      : "w-full h-[12%]  flex justify-between items-center border-b-2 border-gr border-dotted "
+                  }
+                  onClick={() => {
                     set_selected_rx(index);
-             
                   }}
                 >
-                  <div className={selected_rx==index?"w-full h-5/6 flex justify-between items-center bg-[#E1EDEB] rounded-lg":"w-full h-5/6 flex justify-between items-center "}>
-                  <div className="w-[75%] h-full p-2">
-                    <div className={selected_rx==index?"w-full h-1/2 flex  items-end text-[#007965]":"w-full h-1/2 flex  items-end text-[#5C6266] font-medium"}>
-                      {convertToTitleCase(rx.name)}
-                    </div>
-                    <div className="w-full h-1/2 flex items-center text-[#808080] font-medium">
-                      {rx.no_of_drug} Drugs
-                    </div>
-                  </div>
                   <div
-                    className="h-full w-[10%] flex justify-center items-center"
-                    onClick={() => {
-                      setrename_id(rx.id);
-                      set_show_notu(true);
-                    }}
+                    className={
+                      selected_rx == index
+                        ? "w-full h-5/6 flex justify-between items-center bg-[#E1EDEB] rounded-lg"
+                        : "w-full h-5/6 flex justify-between items-center "
+                    }
                   >
-                    <CalendarViewWeekIcon></CalendarViewWeekIcon>
-                  </div>
-                  <div className="h-full w-[10%] flex justify-center items-center">
-                    <UnstyledSwitchIntroduction
-                      checked={rx.isactive}
-                      onChange={() => active_change(rx.id)}
-                    />
-                  </div>
+                    <div className="w-[75%] h-full p-2">
+                      <div
+                        className={
+                          selected_rx == index
+                            ? "w-full h-1/2 flex  items-end text-[#007965]"
+                            : "w-full h-1/2 flex  items-end text-[#5C6266] font-medium"
+                        }
+                      >
+                        {convertToTitleCase(rx.name)}
+                      </div>
+                      <div className="w-full h-1/2 flex items-center text-[#808080] font-medium">
+                        {rx.no_of_drug} Drugs
+                      </div>
+                    </div>
+                    <div
+                      className="h-full w-[10%] flex justify-center items-center"
+                      onClick={() => {
+                        setrename_id(rx.id);
+                        set_show_notu(true);
+                      }}
+                    >
+                      <CalendarViewWeekIcon></CalendarViewWeekIcon>
+                    </div>
+                    <div className="h-full w-[10%] flex justify-center items-center">
+                      <UnstyledSwitchIntroduction
+                        checked={rx.isactive}
+                        onChange={() => active_change(rx.id)}
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        <div className="h-full w-[80%] "><Drug_list id={selected_rx}/></div>
+        <div className="h-full w-[80%] ">
+          <Drug_list id={selected_rx} />
+        </div>
       </div>
       {show_noti && (
         <Rename

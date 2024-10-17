@@ -22,6 +22,12 @@ interface duration {
   days: number;
   nose: number;
 }
+interface drug_list {
+  id: number;
+  name: string;
+  isactive: boolean;
+  drug_type: "tablet" | "sirap";
+}
 interface drug {
   id: number;
   drug_name: string;
@@ -39,10 +45,10 @@ interface rx_list {
 interface entire_Rx_data {
   rx: rx_list[];
   add_rx: (rx: string) => number;
-  add_drug: (d: drug, id: number) => void;
+  add_drug: (d: drug_list, id: number) => void;
   rename: (name: string, id: number) => void;
   active_change: (id: number) => void;
-  drug_list_selector:(id:number)=>any
+  drug_list_selector: (id: number) => any;
 }
 export const useBookStore = create(
   persist<entire_Rx_data>(
@@ -53,25 +59,32 @@ export const useBookStore = create(
           name: "group: 1",
           no_of_drug: 5,
           isactive: false,
-          Drug: [{
-            id:1,
-            drug_name:"taste",
-            Duration:{
-              id:1,days:2,
-              nose:1
+          Drug: [
+            {
+              id: 1,
+              drug_name: "taste",
+              Duration: {
+                id: 1,
+                days: 2,
+                nose: 1,
+              },
+              Time: {
+                id: 1,
+                time: 1,
+                time_type: "daily",
+                take_type: 2,
+              },
+              Dose: {
+                id: 1,
+                is_morning: true,
+                is_afternon: false,
+                is_evening: false,
+                morning_dose: 1,
+                evening_dose: 0,
+                afternoon_dose: 0,
+              },
             },
-            Time:{
-              id:1,time:1,time_type:"daily",take_type:2
-            },Dose:{
-              id:1,
-              is_morning: true,
-              is_afternon: false,
-              is_evening: false,
-              morning_dose: 1,
-              evening_dose: 0,
-              afternoon_dose:0,
-            }
-          }],
+          ],
         },
         {
           id: 2,
@@ -95,44 +108,64 @@ export const useBookStore = create(
           Drug: [],
         },
       ],
-      add_rx: (rx:string) =>{
-        const rx_create={
+      add_rx: (rx: string) => {
+        console.log("created");
+        const rx_create = {
           id: 5,
           name: rx,
           no_of_drug: 0,
           isactive: false,
-          Drug: [], 
-        }
-        
+          Drug: [],
+        };
+
         set((state) => ({
           rx: [...state.rx, rx_create],
-        }))
-      return rx_create?.id 
-    },
-      add_drug: (d, id) =>
-        set((state) => {
-          const rxIndex:number= state.rx.findIndex(
-            (currentRx) => currentRx.id === id
-          );
-          if (rxIndex === -1) {
-            return state;
-          }
-          const update = {
-            ...state.rx[rxIndex],
-            Drug: [...state.rx[rxIndex].Drug, d],
-            no_of_drugs: state.rx[rxIndex].no_of_drug + 1,
-          };
-          return {
-            rx: [
-              ...state.rx.slice(0, rxIndex),
-              update,
-              ...state.rx.slice(rxIndex + 1),
-            ],
-          };
-        }),
+        }));
+        return rx_create?.id;
+      },
+      add_drug: (d, id) => {
+        console.log(d);
+        set((state) => ({
+          ...state,
+          rx: state.rx.map((rx) =>
+            rx.id === id
+              ? {
+                  ...rx,
+                  Drug: [
+                    ...rx.Drug,
+                    {
+                      id: 8,
+                      drug_name: d.drug_type,
+                      Duration: {
+                        id: 1,
+                        days: 2,
+                        nose: 1,
+                      },
+                      Time: {
+                        id: 1,
+                        time: 1,
+                        time_type: "daily",
+                        take_type: 2,
+                      },
+                      Dose: {
+                        id: 1,
+                        is_morning: true,
+                        is_afternon: false,
+                        is_evening: false,
+                        morning_dose: 1,
+                        evening_dose: 0,
+                        afternoon_dose: 0,
+                      },
+                    },
+                  ],
+                  no_of_drug: rx.no_of_drug + 1,
+                }
+              : rx
+          ),
+        }));
+      },
       active_change: (id) =>
         set((state) => {
-         
           const rxIndex = state.rx.findIndex(
             (currentRx) => currentRx.id === id
           );
@@ -143,7 +176,7 @@ export const useBookStore = create(
             ...state.rx[rxIndex],
             isactive: !state.rx[rxIndex].isactive,
           };
-          console.log("timing",update,rxIndex);
+          console.log("timing", update, rxIndex);
           return {
             rx: [
               ...state.rx.slice(0, rxIndex),
@@ -152,14 +185,14 @@ export const useBookStore = create(
             ],
           };
         }),
-        drug_list_selector: (id) => {
-          console.log(id)
-    
-          return useBookStore.getState().rx[id];
-        }       ,
+      drug_list_selector: (id) => {
+        console.log("selection ", id);
+
+        return useBookStore.getState().rx[id];
+      },
       rename: (name, id) =>
         set((state) => {
-          console.log("timing")
+          console.log("timing");
           const rxIndex = state.rx.findIndex(
             (currentRx) => currentRx.id === id
           );

@@ -5,6 +5,7 @@ import "./auto.css"
 import { NoEncryption } from '@mui/icons-material';
 import "./auto.css"
 import { drug } from "../../src/stores/drug.tsx";
+import { useBookStore } from '../stores/rx.tsx';
 const filter = createFilterOptions();
 interface drug_list{
     id: number;
@@ -18,28 +19,43 @@ interface drug_list{
     
   }
 export default function FreeSoloCreateOption() {
+    const [textfiels_value,settextfiels_value]=React.useState("")
+    const handletextfieldchange=(event:any)=>{
+        settextfiels_value(event.target.value)
+    
+    }
   const [value, setValue] = React.useState<any>(null);
   const drug_data = drug((state) => state.drug_list);
-  console.log(drug_data)
+  const add_drug=useBookStore((state)=>state.add_drug)
+  const handleSelectionChange = (event:any, value:drug_list) => {
+    console.log("hi",event.target)
+    if (value) {
+      console.log('Selected:', value);
+      
+    }
+    add_drug(value,5)
+ settextfiels_value("")
+  };
   
   return (
     <Autocomplete
   
       value={value}
-      onChange={(event, newValue) => {
-        if (typeof newValue === 'string') {
-          setValue({
-            name: newValue,
-          });
-        } else if (newValue && newValue.inputValue) {
-          // Create a new value from the user input
-          setValue({
-            name: newValue.inputValue,
-          });
-        } else {
-          setValue(newValue);
-        }
-      }}
+      onChange={
+        handleSelectionChange
+        // if (typeof newValue === 'string') {
+        //   setValue({
+        //     name: newValue,
+        //   });
+        // } else if (newValue && newValue.inputValue) {
+        //   // Create a new value from the user input
+        //   setValue({
+        //     name: newValue.inputValue,
+        //   });
+        // } else {
+        //   setValue(newValue);
+        // }
+      }
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
 
@@ -74,6 +90,7 @@ export default function FreeSoloCreateOption() {
       }}
       renderOption={(props, option) => {
         const { key, ...optionProps } = props;
+        console
       
         return (
           <li key={key} {...optionProps} className='p-5 border-b-2 border-gr'>
@@ -95,7 +112,9 @@ export default function FreeSoloCreateOption() {
       renderInput={(params) => (
         
         <div  className="w-[90%] h-full pl-4 font-[500] focus:outline-0">
-        <TextField sx={{
+        <TextField value={textfiels_value} onChange={(e)=>{
+            handletextfieldchange(e)
+        }} sx={{
             padding: "0",
             '& .MuiOutlinedInput-root': {
               '& fieldset': {

@@ -4,6 +4,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ModeOutlinedIcon from "@mui/icons-material/ModeOutlined";
 import { useBookStore } from "./stores/rx";
 import { convertToTitleCase } from "../src/functions/Title.tsx";
+import { useNavigate } from "react-router-dom";
 interface dose {
   id: number;
   is_morning: boolean;
@@ -40,6 +41,7 @@ interface rx_list {
   Drug: drug[];
 }
 function Drug_list({ id }: { id: number }) {
+  const navi=useNavigate()
   const selectedDrug = useBookStore((state) => state.drug_list_selector);
   const [fetchedList, setfetchedList] = useState<rx_list | null>(null);
   useEffect(() => {
@@ -47,6 +49,9 @@ function Drug_list({ id }: { id: number }) {
     console.log(selectedDrug(id));
     console.log("fetched");
   }, [id]);
+  const add_drug=()=>{
+  navi("/add_drugs", { state: id});
+  }
   return (
     <div className="w-full h-full flex justify-center items-center">
       <div className="h-[95%] w-[95%] flex flex-col justify-between items-start ">
@@ -109,7 +114,9 @@ function Drug_list({ id }: { id: number }) {
             )}
 
             <div className="w-full h-14 flex items-center justify-start">
-              <div className="h-full w-[5%] flex justify-center items-center">
+              <div className="h-full w-[5%] flex justify-center items-center" onClick={()=>{
+                add_drug()
+              }}>
                 <AddCircleIcon sx={{ fontsize: "10px", color: "#007965" }} />
               </div>
               <div className="h-full w-[10%] flex justify-start items-center">
