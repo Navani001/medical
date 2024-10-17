@@ -101,14 +101,14 @@ const columns = [
 export default function BasicTable({id}:{id:number}) {
   const rx_selector = useBookStore((state) => state.drug_list_selector);
   const rerender=useBookStore((state)=>state.rx)
-  console.log(rx_selector)
+
   const [data, _setData] = React.useState<Drug[]>([]);
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const drugList = await rx_selector(5); // Replace with actual Rx ID
-        console.log('Drug list:', drugList);
+        const drugList = await rx_selector(id); // Replace with actual Rx ID
+    
         if (drugList?.Drug) {
           _setData(drugList.Drug);
         }

@@ -46,11 +46,11 @@ function Drug_list({ id }: { id: number }) {
   const [fetchedList, setfetchedList] = useState<rx_list | null>(null);
   useEffect(() => {
     setfetchedList(selectedDrug(id));
-    console.log(selectedDrug(id));
-    console.log("fetched");
+  
   }, [id]);
   const add_drug=()=>{
-  navi("/add_drugs", { state: id});
+  
+  navi("/add_drugs", { state: id });
   }
   return (
     <div className="w-full h-full flex justify-center items-center">

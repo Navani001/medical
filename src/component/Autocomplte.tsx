@@ -28,9 +28,9 @@ export default function FreeSoloCreateOption({id}:{id:number}) {
   const drug_data = drug((state) => state.drug_list);
   const add_drug=useBookStore((state)=>state.add_drug)
   const handleSelectionChange = (event:any, value:drug_list) => {
-    console.log("hi",event.target)
+  
     if (value) {
-      console.log('Selected:', value);
+  
       
     }
     add_drug(value,id)

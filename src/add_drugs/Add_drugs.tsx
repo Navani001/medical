@@ -32,16 +32,19 @@ const button = () => {
 };
 function Add_drugs() {
   const location = useLocation();
-  const data = location.state;
+  const data = location.state || 0;
+  console.log("data",data)
   const drug_data = drug((state) => state.drug_list);
   const rx_data_selector = useBookStore((state) => state.drug_list_selector);
   const [rx_data, setrx_data] = useState<any>(null);
   React.useEffect(() => {
+
     const fetch_data = async () => {
       const temp_data = await rx_data_selector(data);
-      console.log(temp_data);
+      console.log(temp_data)
+ 
       setrx_data(temp_data);
-      console.log("data", temp_data);
+     
     };
     fetch_data();
   }, [rx_data_selector]);

@@ -57,7 +57,7 @@ export const useBookStore = create(
         {
           id: 1,
           name: "group: 1",
-          no_of_drug: 5,
+          no_of_drug: 1,
           isactive: false,
           Drug: [
             {
@@ -89,14 +89,14 @@ export const useBookStore = create(
         {
           id: 2,
           name: "group: 2",
-          no_of_drug: 3,
+          no_of_drug: 0,
           isactive: false,
           Drug: [],
         },
         {
           id: 3,
           name: "group: 6",
-          no_of_drug: 1,
+          no_of_drug: 0,
           isactive: false,
           Drug: [],
         },
@@ -109,7 +109,6 @@ export const useBookStore = create(
         },
       ],
       add_rx: (rx: string) => {
-        console.log("created");
         const rx_create = {
           id: 4,
           name: rx,
@@ -124,11 +123,10 @@ export const useBookStore = create(
         return rx_create?.id;
       },
       add_drug: (d, id) => {
-        console.log(d);
         set((state) => ({
           ...state,
-          rx: state.rx.map((rx) =>
-            rx.id === id
+          rx: state.rx.map((rx,index) =>
+            index === id
               ? {
                   ...rx,
                   Drug: [
@@ -176,7 +174,6 @@ export const useBookStore = create(
             ...state.rx[rxIndex],
             isactive: !state.rx[rxIndex].isactive,
           };
-          console.log("timing", update, rxIndex);
           return {
             rx: [
               ...state.rx.slice(0, rxIndex),
@@ -186,13 +183,11 @@ export const useBookStore = create(
           };
         }),
       drug_list_selector: (id) => {
-        console.log("selection ", id);
 
         return useBookStore.getState().rx[id];
       },
       rename: (name, id) =>
         set((state) => {
-          console.log("timing");
           const rxIndex = state.rx.findIndex(
             (currentRx) => currentRx.id === id
           );
