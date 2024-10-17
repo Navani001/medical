@@ -74,8 +74,9 @@ export default function FreeSoloCreateOption() {
       }}
       renderOption={(props, option) => {
         const { key, ...optionProps } = props;
+      
         return (
-          <li key={key} {...optionProps} className='p-5 border-t-2 border-gr'>
+          <li key={key} {...optionProps} className='p-5 border-b-2 border-gr'>
             {option.drug_type}-{option.name}
           </li>
         );
@@ -93,7 +94,7 @@ export default function FreeSoloCreateOption() {
       freeSolo
       renderInput={(params) => (
         
-        <div  className="w-[82%] h-full pl-4 font-[500] focus:outline-0">
+        <div  className="w-[90%] h-full pl-4 font-[500] focus:outline-0">
         <TextField sx={{
             padding: "0",
             '& .MuiOutlinedInput-root': {

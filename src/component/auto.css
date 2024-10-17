@@ -1,6 +1,14 @@
 .MuiAutocomplete-popper{
+    padding: 0ch;
+    margin: 0ch;
     /* background-color: aqua; */
     padding-top: 10px;
     margin-top: 10px;
-}
 
+}
+.MuiAutocomplete-paper{
+    padding: 0ch;
+    margin: 0ch;
+    border: 2px solid #E3E3E3;
+    border-radius: 10px;
+}

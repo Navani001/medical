@@ -47,7 +47,7 @@ function Add_drugs() {
               className="w-[82%] h-full pl-4 font-[500] focus:outline-0"
               placeholder="Search drugs"
             /> */}
-            <div className="h-full w-[15%] flex justify-end items-center ">
+            <div className="h-full w-[20%] flex justify-end items-center ">
               <div className="h-[70%] w-full justify-around items-center  flex font-medium">
                 {Search.map((item, index) => (
                   <div
