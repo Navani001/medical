@@ -106,10 +106,10 @@ export default function BasicTable() {
       
         <tbody>
           {table.getRowModel().rows.map(row => (
-            <tr key={row.id} className="table-row bg-gr border-2 border-spacing-5 border-black">
+            <tr key={row.id} className="table-row ">
               
               {row.getVisibleCells().map(cell => (
-                <td key={cell.id} className='px-4 pr-2 py-5 font-medium text-left '>
+                <td key={cell.id} className='px-4 pr-2 py-5'  >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

@@ -92,6 +92,8 @@ export default function FreeSoloCreateOption() {
       }}
       freeSolo
       renderInput={(params) => (
+        
+        <div  className="w-[82%] h-full pl-4 font-[500] focus:outline-0">
         <TextField sx={{
             padding: "0",
             '& .MuiOutlinedInput-root': {
@@ -101,7 +103,10 @@ export default function FreeSoloCreateOption() {
               padding: "7px",  // Add padding here for the TextField
             },
           }}  {...params} placeholder='Search a drug'  />
-      )}
+             </div>
+      )
+    }
+ 
     />
   );
 }

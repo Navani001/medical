@@ -16,4 +16,10 @@ th:last-child {
 th {
   text-transform: none; /* Prevent capitalization */
 }
+.table-row
+{
+ 
+  border-radius: 10px ;
+  outline: 1px solid #E2E2E2;
+}
 

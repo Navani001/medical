@@ -39,9 +39,9 @@ function Add_drugs() {
       <div className="w-full h-[90%]  flex items-center justify-center">
         <div className="w-[95%] h-[91%] ">
           <div className="w-full h-[7%]  border-2 border-gr rounded-lg flex justify-between">
-            <div  className="w-[82%] h-full pl-4 font-[500] focus:outline-0">
+          
               <FreeSoloCreateOption/>
-            </div>
+            
             {/* <input
               type="text"
               className="w-[82%] h-full pl-4 font-[500] focus:outline-0"
