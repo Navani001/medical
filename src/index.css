@@ -22,3 +22,8 @@ html, body, #root {
   font-family: "Poppins", sans-serif;
 }
 
+/* auto.css */
+.css-28116y-MuiAutocomplete-root .MuiOutlinedInput-root {
+  padding: 0;
+  margin: 0; /* Add margin reset if needed */
+}

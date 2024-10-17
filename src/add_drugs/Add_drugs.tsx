@@ -3,6 +3,20 @@ import { useLocation } from "react-router-dom";
 import Rxheader from "../component/Rxheader";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import BasicTable from "../drug_table/Drug_table";
+
+import { drug } from "../../src/stores/drug.tsx";
+import FreeSoloCreateOption from "../component/Autocomplte.tsx";
+interface drug_list{
+  id: number;
+  name: string;
+  isactive: boolean;
+  drug_type:"tablet" | "sirap"
+}
+interface entire_drug_data {
+  drug_list: drug_list[];
+  add_drug: () =>void;
+  
+}
 const button = () => {
   const [empty, setempty] = useState(true);
   return (
@@ -12,6 +26,7 @@ const button = () => {
   );
 };
 function Add_drugs() {
+  const drug_data = drug((state) => state.drug_list);
   const [selected_search_type, set_selected_search_type] = useState(0);
   const Search = ["All", "Drugs", "Rx Group"];
   const location = useLocation();
@@ -24,11 +39,14 @@ function Add_drugs() {
       <div className="w-full h-[90%]  flex items-center justify-center">
         <div className="w-[95%] h-[91%] ">
           <div className="w-full h-[7%]  border-2 border-gr rounded-lg flex justify-between">
-            <input
+            <div  className="w-[82%] h-full pl-4 font-[500] focus:outline-0">
+              <FreeSoloCreateOption/>
+            </div>
+            {/* <input
               type="text"
               className="w-[82%] h-full pl-4 font-[500] focus:outline-0"
               placeholder="Search drugs"
-            />
+            /> */}
             <div className="h-full w-[15%] flex justify-end items-center ">
               <div className="h-[70%] w-full justify-around items-center  flex font-medium">
                 {Search.map((item, index) => (

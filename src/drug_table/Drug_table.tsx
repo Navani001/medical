@@ -42,25 +42,26 @@ const columns = [
 
   columnHelper.accessor(row => row.Drug_name, {
     id: 'Drug_name',
-    cell: info => <i>{info.getValue()}</i>,
-    header: () => <span className='w-20'>Drug_name</span>,
+    cell: info => <span className='font-bold'>{info.getValue()}</span>,
+    header: () => <span className='w-20'>Drug name</span>,
     
   }),
   columnHelper.accessor('Dose', {
-    header: () => <span className='w-20'>Drug_name</span>,
+    header: () => 'Dose',
     cell: info => info.renderValue(),
   
   }),
   columnHelper.accessor('Time', {
-    header: () => <span className='w-20'>Drug_name</span>,
+    header: () => <span className='w-20'>Time, Frequency & When</span>,
   }),
   columnHelper.accessor('Duration', {
-    header: () => <span className='w-28'>Drug_name</span>,
+    header: () => <span className='w-28'>Duration & Quantity</span>,
   }),
 
 ]
 
 export default function BasicTable() {
+ 
   const [data, _setData] = React.useState(() => [...defaultData])
   const rerender = React.useReducer(() => ({}), {})[1]
 
@@ -85,7 +86,7 @@ export default function BasicTable() {
               {headerGroup.headers.map(header => (
                 <th
                   key={header.id}
-                  className="px-4 pr-2 py-4 font-medium text-left ">
+                  className="px-4 pr-2 py-3 font-medium text-left ">
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -105,9 +106,10 @@ export default function BasicTable() {
       
         <tbody>
           {table.getRowModel().rows.map(row => (
-            <tr key={row.id} className="table-row">
+            <tr key={row.id} className="table-row bg-gr border-2 border-spacing-5 border-black">
+              
               {row.getVisibleCells().map(cell => (
-                <td key={cell.id} className='px-4 pr-2 py-4 font-medium text-left '>
+                <td key={cell.id} className='px-4 pr-2 py-5 font-medium text-left '>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
