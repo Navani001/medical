@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 function Renamecontent({
   header,

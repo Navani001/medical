@@ -14,7 +14,7 @@ interface entire_drug_data {
 }
 export const drug = create(
   persist<entire_drug_data>(
-    (set) => ({
+    () => ({
       drug_list: [
         {
           id: 1,

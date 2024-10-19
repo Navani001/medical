@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ModeOutlinedIcon from "@mui/icons-material/ModeOutlined";
@@ -76,22 +76,22 @@ function Drug_list({ id }: { id: number }) {
                     <div className="h-12 w-full flex justify-start ">
                       <div className="w-5/6 h-1/2 flex">
                         <div className="w-full h-full flex">
-                          <div className="h-full w-[6%] border-r-1 border-[#888888] flex  text-[#888888] font-medium">
+                          <div className="h-full w-[6%] border-r-2 border-[#888888] flex  text-[#888888] font-medium">
                             {drug.Dose.is_morning ? 1 : 0}-
                             {drug.Dose.is_afternon ? 1 : 0}-
                             {drug.Dose.is_evening ? 1 : 0}
                           </div>
-                          <div className="h-full w-[20%]  border-r-1 border-[#888888]  flex justify-center text-[#888888] font-medium">
+                          <div className="h-full w-[20%]  border-r-2 border-[#888888]  flex justify-center text-[#888888] font-medium">
                             {drug.Time.time} mins -{" "}
                             {drug.Time.take_type == 1
                               ? "After Food"
                               : "Before Food"}
                           </div>
-                          <div className="h-full w-[20%]  border-r-1 border-[#888888] flex justify-center text-[#888888] font-medium">
+                          <div className="h-full w-[20%]  border-r-2 border-[#888888] flex justify-center text-[#888888] font-medium">
                             {drug.Time.time_type} for {drug.Duration.days}{" "}
                             Day(s)
                           </div>
-                          <div className="h-full w-[10%]  border-r-1 border-[#888888] flex justify-center text-[#888888] font-medium">
+                          <div className="h-full w-[10%]  border-r-2 border-[#888888] flex justify-center text-[#888888] font-medium">
                             {drug.Duration.nose} Qty
                           </div>
                         </div>

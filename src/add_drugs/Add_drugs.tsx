@@ -4,21 +4,12 @@ import Rxheader from "../component/Rxheader";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import BasicTable from "../drug_table/Drug_table";
 import { useBookStore } from "../stores/rx";
-import { drug } from "../../src/stores/drug.tsx";
+
 import FreeSoloCreateOption from "../component/Autocomplte.tsx";
-interface drug_list {
-  id: number;
-  name: string;
-  isactive: boolean;
-  drug_type: "tablet" | "sirap";
-}
-interface entire_drug_data {
-  drug_list: drug_list[];
-  add_drug: () => void;
-}
+
 const button = () => {
   const navi = useNavigate();
-  const [empty, setempty] = useState(true);
+  
   return (
     <button
       className="p-2.5 bg-p_green rounded-lg text-white font-medium"
@@ -34,7 +25,7 @@ function Add_drugs() {
   const location = useLocation();
   const data = location.state || 0;
   console.log("data",data)
-  const drug_data = drug((state) => state.drug_list);
+ 
   const rx_data_selector = useBookStore((state) => state.drug_list_selector);
   const [rx_data, setrx_data] = useState<any>(null);
   React.useEffect(() => {

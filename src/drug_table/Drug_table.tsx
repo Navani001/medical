@@ -11,6 +11,7 @@ import { convertToTitleCase } from "../functions/Title.tsx";
 import no_data from "../assets/Group 5623.png";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Update from "../dialog/update.tsx";
 // Define interfaces for the data structure
 interface Dose {
   id: number;
@@ -43,91 +44,19 @@ interface Drug {
   Dose: Dose;
 }
 
-interface RxList {
-  id: number;
-  name: string;
-  isactive: boolean;
-  no_of_drug: number;
-  Drug: Drug[];
-}
 
 // Column helper for table configuration
 const columnHelper = createColumnHelper<Drug>();
 
-const columns = [
-  columnHelper.accessor("drug_name", {
-    id: "drug_name",
-    cell: (info) => <span className="font-bold">{info.getValue()}</span>,
-    header: () => <span className="w-20 font-medium">Drug Name</span>,
-  }),
-  columnHelper.accessor("Dose", {
-    header: () => <span className="w-28 font-medium">Dose</span>,
-    cell: (info) => {
-      const dose = info.getValue() as Dose;
-      return (
-        <div className="text-[#4D4D4D] flex font-medium text-base">
-          {dose.is_morning ? <span>1</span> : <span>0</span>}-
-          {dose.is_afternon ? <span>1</span> : <span>0</span>}-
-          {dose.is_evening ? <span>1</span> : <span>0</span>}{" "}
-          <span className="flex justify-center w-8 items-center pr-3 text-p_green">
-            <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
-          </span>
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor("Time", {
-    header: () => (
-      <span className="w-20 font-medium">Time, Frequency & When</span>
-    ),
-    cell: (info) => {
-      const time = info.getValue() as Time;
-      return (
-        <div className="text-base">
-          <span className="text-[#4D4D4D] flex font-medium">
-            {time.time} min, {convertToTitleCase(time.time_type)},
-            {convertToTitleCase(time.take_type ? "before" : "after")} fOOD{" "}
-            <span className="flex justify-center w-8 items-center pr-3 text-p_green">
-              <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
-            </span>
-          </span>
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor("Duration", {
-    header: () => <span className="w-28 font-medium">Duration & Quantity</span>,
-    cell: (info) => {
-      const duration = info.getValue() as Duration;
-      return (
-        <div className="flex text-base">
-          <span className="text-[#4D4D4D] font-medium">
-            {duration.days} days, {duration.nose} nos
-          </span>{" "}
-          <span className="flex justify-center w-8 items-center pr-3 text-p_green">
-            <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
-          </span>
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor("id", {
-    header: () => <span></span>,
-    cell: (info) => {
-      return (
-        <div className="flex text-lg">
-          <span className="flex justify-center items-center p-2  rounded-full text-[#F44F5A] bg-[#FEEDEE] ">
-            <DeleteIcon sx={{ fontSize: "20px" }} />
-          </span>
-        </div>
-      );
-    },
-  }),
-];
+
 
 export default function BasicTable({ id }: { id: number }) {
   const rx_selector = useBookStore((state) => state.drug_list_selector);
   const rerender = useBookStore((state) => state.rx);
+  const [show_dose,setshow_dose]=React.useState<Boolean>(false)
+  const [show_t,setshow_t]=React.useState<Boolean>(false)
+
+  const [show_duration,setshow_duration]=React.useState<Boolean>(false)
 
   const [data, _setData] = React.useState<Drug[]>([]);
 
@@ -146,7 +75,82 @@ export default function BasicTable({ id }: { id: number }) {
 
     fetchData();
   }, [rx_selector, rerender]);
-
+  const columns = [
+    columnHelper.accessor("drug_name", {
+      id: "drug_name",
+      cell: (info) => <span className="font-bold">{info.getValue()}</span>,
+      header: () => <span className="w-20 font-bold text-sm">Drug Name</span>,
+    }),
+    columnHelper.accessor("Dose", {
+      header: () => <span className="w-28 font-medium text-sm">Dose</span>,
+      cell: (info) => {
+        const dose = info.getValue() as Dose;
+        return (
+          <div className="text-[#4D4D4D] flex font-medium text-base">
+            {dose.is_morning ? <span>1</span> : <span>0</span>}-
+            {dose.is_afternon ? <span>1</span> : <span>0</span>}-
+            {dose.is_evening ? <span>1</span> : <span>0</span>}{" "}
+            <span className="flex justify-center w-8 items-center pr-3 text-p_green" onClick={()=>{
+              setshow_dose(true)
+            }}>
+              <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
+            </span>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("Time", {
+      header: () => (
+        <span className="w-20 font-bold text-sm">Time, Frequency & When</span>
+      ),
+      cell: (info) => {
+        const time = info.getValue() as Time;
+        return (
+          <div className="text-base">
+            <span className="text-[#4D4D4D] flex font-medium">
+              {time.time} min, {convertToTitleCase(time.time_type)},
+              {convertToTitleCase(time.take_type ? "before" : "after")} Food{" "}
+              <span className="flex justify-center w-8 items-center pr-3 text-p_green"  onClick={()=>{
+              setshow_t(true)
+            }}>
+                <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
+              </span>
+            </span>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("Duration", {
+      header: () => <span className="w-28 font-bold text-sm">Duration & Quantity</span>,
+      cell: (info) => {
+        const duration = info.getValue() as Duration;
+        return (
+          <div className="flex text-base">
+            <span className="text-[#4D4D4D] font-medium">
+              {duration.days} days, {duration.nose} nos
+            </span>{" "}
+            <span className="flex justify-center w-8 items-center pr-3 text-p_green"  onClick={()=>{
+              setshow_duration(true)
+            }}> 
+              <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
+            </span>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("id", {
+      header: () => <span></span>,
+      cell: () => {
+        return (
+          <div className="flex text-lg">
+            <span className="flex justify-center items-center p-2  rounded-full text-[#F44F5A] bg-[#FEEDEE] ">
+              <DeleteIcon sx={{ fontSize: "20px" }} />
+            </span>
+          </div>
+        );
+      },
+    }),
+  ];
   // Table instance using useReactTable
   const table = useReactTable({
     data,
@@ -195,6 +199,15 @@ export default function BasicTable({ id }: { id: number }) {
           </tbody>
         </table>
       )}
+      {
+        show_dose && <Update set_show_notu={setshow_dose} header="Dose" h={"320px"}/>
+      }
+      {
+        show_t && <Update set_show_notu={setshow_t} header="Time, Frequency & When" h={"500px"}/>
+      }
+      {
+        show_duration && <Update set_show_notu={setshow_duration} header="Duration & Qty" h={"270px"}/>
+      }
     </div>
   );
 }

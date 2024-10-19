@@ -1,4 +1,4 @@
-import React from "react";
+
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 export interface Props {
     heading: string,

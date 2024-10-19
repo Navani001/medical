@@ -2,8 +2,8 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import "./auto.css"
-import { NoEncryption } from '@mui/icons-material';
-import "./auto.css"
+
+
 import { drug } from "../../src/stores/drug.tsx";
 import { useBookStore } from '../stores/rx.tsx';
 const filter = createFilterOptions();
@@ -13,11 +13,7 @@ interface drug_list{
     isactive: boolean;
     drug_type:"tablet" | "sirap"
   }
-  interface entire_drug_data {
-    drug_list: drug_list[];
-    add_drug: () =>void;
-    
-  }
+ 
 export default function FreeSoloCreateOption({id}:{id:number}) {
     const [textfiels_value,settextfiels_value]=React.useState("")
     const handletextfieldchange=(event:any)=>{
@@ -25,6 +21,7 @@ export default function FreeSoloCreateOption({id}:{id:number}) {
     
     }
   const [value, setValue] = React.useState<any>(null);
+  setValue(null)
   const drug_data = drug((state) => state.drug_list);
   const add_drug=useBookStore((state)=>state.add_drug)
   const handleSelectionChange = (event:any, value:drug_list) => {
@@ -35,6 +32,7 @@ export default function FreeSoloCreateOption({id}:{id:number}) {
     }
     add_drug(value,id)
  settextfiels_value("")
+ event.target.value=''
   };
   
   return (
