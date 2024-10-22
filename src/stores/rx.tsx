@@ -1,3 +1,5 @@
+import axios from "axios";
+import { merge } from "lodash";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -44,6 +46,7 @@ interface rx_list {
 }
 interface entire_Rx_data {
   rx: rx_list[];
+  rx_backend: () => void;
   add_rx: (rx: string) => number;
   add_drug: (d: drug_list, id: number) => void;
   rename: (name: string, id: number) => void;
@@ -60,6 +63,26 @@ interface entire_Rx_data {
 export const useBookStore = create(
   persist<entire_Rx_data>(
     (set) => ({
+      rx_backend: () => {
+        axios
+          .get("http://localhost:5000/drugs/all_rx")
+          .then(function (response) {
+            const merged_array: any = [];
+            response.data.map((item: any) => {
+              merged_array.push({
+                id: item.id,
+                name: item.name,
+                no_of_drug: 0,
+                isactive: item.is_active,
+                Drug: [],
+              });
+            });
+            console.log(merged_array);
+            // set({
+            //   rx: merged_array,
+            // });
+          });
+      },
       delete: (rx_id, dose_id) => {
         console.log(useBookStore.getState().rx);
         console.log(
@@ -79,7 +102,7 @@ export const useBookStore = create(
             index === rx_id
               ? {
                   ...rx,
-                  
+                  no_of_drug:rx.no_of_drug-1,
                   Drug: rx.Drug.filter((item) => item.id !== dose_id),
                 }
               : rx
@@ -242,8 +265,20 @@ export const useBookStore = create(
         },
       ],
       add_rx: (rx: string) => {
+        let id = -1;
+        axios
+          .post("http://localhost:5000/drugs/add_rx", {
+            name: rx,
+          })
+          .then(function (response) {
+            console.log(response.data.id);
+            id = response.data.id;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         const rx_create = {
-          id: 4,
+          id: id,
           name: rx,
           no_of_drug: 0,
           isactive: false,
@@ -256,6 +291,23 @@ export const useBookStore = create(
         return rx_create?.id;
       },
       add_drug: (d, id) => {
+        axios
+          .post("http://localhost:5000/drugs/add_drug_rx/" + id, {
+            drug_id: d.id,
+            no_of_days: 0,
+            quantity: 0,
+            time_to_take: 1,
+            drug_time: 1,
+            comsumption_type_id: 1,
+            comsumption_day_type_id: 1,
+          })
+          .then(function (response) {
+            console.log(response.data);
+            
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         set((state) => ({
           ...state,
           rx: state.rx.map((rx, index) =>

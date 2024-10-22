@@ -68,12 +68,14 @@ function Rxtable() {
   const rx_list = useBookStore((state) => state.rx);
   const rename = useBookStore((state) => state.rename);
   const add_r = useBookStore((state) => state.add_rx);
+  const add_backend = useBookStore((state) => state.rx_backend);
+
   const active_change = useBookStore((state) => state.active_change);
   const [rename_id, setrename_id] = useState<number>(-1);
   const [show_noti, set_show_notu] = useState<boolean>(false);
   const [show_cre_noti, set_show_cre_notu] = useState<boolean>(false);
   // const [rx_list, set_rx_list] = useState<rx_list_element[]>([]);
-  const [filteredrx, setfilteredrx] = useState<rx_list_element[]>(rx_list);
+  const [filteredrx, setfilteredrx] = useState<any>(rx_list);
   const [filter, setfilter] = useState<string>("");
   const add_rx = (name: string) => {
     const id = add_r(name);
@@ -83,7 +85,7 @@ function Rxtable() {
 
   const handlefilter = async () => {
  
-    const filtered_rx_list: rx_list_element[] = await rx_list.filter((rx) =>
+    const filtered_rx_list: any = await rx_list.filter((rx) =>
       rx.name.toLowerCase().includes(filter.toLowerCase())
     );
    
@@ -113,6 +115,9 @@ function Rxtable() {
       setfilteredrx(rx_list);
     }
   }, [filter, setfilter]);
+  useEffect(()=>{
+    add_backend()
+  },[])
 
   return (
     <div className="h-full w-full ">
@@ -152,7 +157,7 @@ function Rxtable() {
               </div>
             </div>
             <div className="w-full h-[86%] overflow-y-scroll scrollbar-width-none">
-              {filteredrx.map((rx, index) => (
+              {filteredrx.map((rx:any, index:any) => (
                 <div
                   key={index}
                   className={

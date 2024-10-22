@@ -66,8 +66,8 @@ function Add_drugs() {
                     }}
                     className={
                       selected_search_type == index
-                        ? "h-full p-1 pr-2 pl-2 text-[#888888] cursor-pointer border-2 rounded-lg flex justify-center bg-p_green text-white"
-                        : "h-full p-1 pr-2 pl-2 text-[#888888] cursor-pointer border-2 rounded-lg flex justify-center "
+                        ? "h-full  pr-2 pl-2 text-[#888888] cursor-pointer border-2 rounded-lg flex justify-center bg-p_green text-white"
+                        : "h-full  pr-2 pl-2 text-[#888888] cursor-pointer border-2 rounded-lg flex justify-center "
                     }
                   >
                     {item}
