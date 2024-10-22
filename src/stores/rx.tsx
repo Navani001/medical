@@ -265,7 +265,7 @@ export const useBookStore = create(
                   Drug: [
                     ...rx.Drug,
                     {
-                      id: 8,
+                      id: d.id,
                       drug_name: d.name,
                       Duration: {
                         id: 1,

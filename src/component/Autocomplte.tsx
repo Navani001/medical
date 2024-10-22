@@ -31,7 +31,7 @@ export default function FreeSoloCreateOption({
   const rx_list = useBookStore((state) => state.rx);
 
   const handleSelectionChange = (event: any, value: drug_list) => {
-  
+    console.log(value,id)
     add_drug(value, id);
     settextfiels_value("");
     event.target.value = "";

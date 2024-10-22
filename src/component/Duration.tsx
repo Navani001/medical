@@ -38,7 +38,7 @@ function Duration({
       console.log(initial_state);
       duration_changer(SelectedDrug, id, initial_state);
    
-
+      
     }
     console.log("trigger");
   }, [trigger]);
