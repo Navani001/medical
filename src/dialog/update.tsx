@@ -4,27 +4,34 @@ import Dialog from "@mui/material/Dialog";
 
 import DialogContent from "@mui/material/DialogContent";
 
-
-
 import CloseIcon from "@mui/icons-material/Close";
 
 export default function Update({
-  set_show_notu,header,h
+  set_show_notu,
+  header,
+  h,
+  w,
+  body_dialog,
+  settrigger,
+  trigger,
+  SelectedDrug
 }: {
-  set_show_notu: (value: boolean) => void,
-  header:string,h:string
+  set_show_notu: (value: boolean) => void;
+  header: string;
+  h: string;
+  w:string;
+  body_dialog:JSX.Element,
+  settrigger:(value:number)=>void,
+  trigger:number,
+  SelectedDrug:number
 }) {
+  settrigger(0)
   const [open, setOpen] = React.useState(true);
-  
-
-
-
-
   const handleClose = () => {
     set_show_notu(false);
     setOpen(false);
   };
- 
+
   return (
     <React.Fragment>
       <Dialog
@@ -43,7 +50,7 @@ export default function Update({
             padding: 0,
           },
           "& .MuiPaper-root": {
-            width: "650px",
+            width: w,
             height: h,
           },
         }}
@@ -60,11 +67,14 @@ export default function Update({
               </div>
             </div>
 
-            <div className="w-full h-[70%] flex">{
-              //body
-              }</div>
-            <div className="w-full h-16 flex justify-center items-center justify-items-end">
-              <div className="h-full w-[93%] flex justify-end">
+            <div className="w-full h-[70%] flex">
+              {
+                //body
+                body_dialog
+              }
+            </div>
+            <div className="w-full h-20 flex justify-center items-center border-t-2 border-gr">
+              <div className="h-[65%] w-[95%] flex justify-end">
                 <div className="h-full w-2/6 flex justify-between items-center">
                   <div
                     className="h-full w-[50%] flex justify-center items-center border-2 rounded-lg border-p_green text-p_green"
@@ -74,7 +84,13 @@ export default function Update({
                   >
                     Cancel
                   </div>
-                  <div className="h-full w-[40%] flex justify-center items-center border-2 bg-p_green rounded-lg text-white">
+                  <div className="h-full w-[40%] flex justify-center items-center border-2 bg-p_green rounded-lg text-white" onClick={()=>{
+                    settrigger(1)
+                    setTimeout(() => {
+                      set_show_notu(false)
+                  }, 1000)
+          
+                  }}>
                     Save
                   </div>
                 </div>

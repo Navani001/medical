@@ -20,7 +20,7 @@ interface time {
 interface duration {
   id: number;
   days: number;
-  nose: number;
+  nose: string;
 }
 interface drug_list {
   id: number;
@@ -49,10 +49,143 @@ interface entire_Rx_data {
   rename: (name: string, id: number) => void;
   active_change: (id: number) => void;
   drug_list_selector: (id: number) => any;
+  dose_selector: (rx_id: number, dose_id: number) => any;
+  dose_changer: (rx_id: number, dose_id: number, update: any) => void;
+  time_changer: (rx_id: number, time_id: number, update: any) => void;
+  duration_changer: (rx_id: number, time_id: number, update: any) => void;
+  time_selector: (rx_id: number, dose_id: number) => any;
+  duration_selector: (rx_id: number, dose_id: number) => any;
+  delete: (rx_id: number, dose_id: number) => void;
 }
 export const useBookStore = create(
   persist<entire_Rx_data>(
     (set) => ({
+      delete: (rx_id, dose_id) => {
+        console.log(useBookStore.getState().rx);
+        console.log(
+          "dose ",
+          useBookStore.getState().rx.map((rx, index) =>
+            index === rx_id
+              ? {
+                  ...rx,
+                  Drug: rx.Drug.filter((item) => item.id !== dose_id),
+                }
+              : rx
+          )
+        );
+        set((state) => ({
+          ...state,
+          rx: state.rx.map((rx, index) =>
+            index === rx_id
+              ? {
+                  ...rx,
+                  
+                  Drug: rx.Drug.filter((item) => item.id !== dose_id),
+                }
+              : rx
+          ),
+        }));
+      },
+      time_changer: (time_id, rx_id, update) => {
+        console.log(rx_id, time_id);
+        const drugIndex = useBookStore
+          .getState()
+          .rx[rx_id].Drug.findIndex(
+            (currentDrug) => currentDrug.id === time_id
+          );
+
+        if (drugIndex === -1) {
+          return;
+        }
+        console.log("changer");
+        console.log(update);
+        const drug = useBookStore.getState().rx[rx_id].Drug[drugIndex];
+        set((state) => {
+          const updatedRx = [...state.rx];
+          updatedRx[rx_id].Drug[drugIndex] = {
+            ...drug,
+            Time: {
+              ...drug.Time,
+              time: update.time,
+              take_type: update.take_type,
+              time_type: update.time_type,
+            },
+          };
+          return { rx: updatedRx };
+        });
+      },
+      duration_changer: (time_id, rx_id, update) => {
+        console.log(rx_id, time_id);
+        const drugIndex = useBookStore
+          .getState()
+          .rx[rx_id].Drug.findIndex(
+            (currentDrug) => currentDrug.id === time_id
+          );
+
+        if (drugIndex === -1) {
+          return;
+        }
+        console.log("in rx changer");
+        console.log(update);
+        const drug = useBookStore.getState().rx[rx_id].Drug[drugIndex];
+        set((state) => {
+          const updatedRx = [...state.rx];
+          updatedRx[rx_id].Drug[drugIndex] = {
+            ...drug,
+            Duration: {
+              ...drug.Duration,
+              days: update.days,
+              nose: update.nose,
+            },
+          };
+          return { rx: updatedRx };
+        });
+      },
+      time_selector: (dose_id, rx_id) => {
+        return useBookStore
+          .getState()
+          .rx[rx_id].Drug.filter((item) => item.id == dose_id)[0];
+      },
+
+      duration_selector: (dose_id, rx_id) => {
+        return useBookStore
+          .getState()
+          .rx[rx_id].Drug.filter((item) => item.id == dose_id)[0];
+      },
+      dose_selector: (dose_id, rx_id) => {
+        console.log(
+          useBookStore
+            .getState()
+            .rx[rx_id].Drug.filter((item) => item.id == dose_id)[0]
+        );
+        return useBookStore
+          .getState()
+          .rx[rx_id].Drug.filter((item) => item.id == dose_id)[0];
+      },
+      dose_changer: (dose_id, rx_id, update) => {
+        const drugIndex = useBookStore
+          .getState()
+          .rx[rx_id].Drug.findIndex(
+            (currentDrug) => currentDrug.id === dose_id
+          );
+        if (drugIndex === -1) {
+          return;
+        }
+        const drug = useBookStore.getState().rx[rx_id].Drug[drugIndex];
+        set((state) => {
+          const updatedRx = [...state.rx];
+          updatedRx[rx_id].Drug[drugIndex] = {
+            ...drug,
+            Dose: {
+              ...drug.Dose,
+              morning_dose: update.morning_dose,
+              evening_dose: update.evening_dose,
+              afternoon_dose: update.afternoon_dose,
+            },
+          };
+          return { rx: updatedRx };
+        });
+      },
       rx: [
         {
           id: 1,
@@ -66,7 +199,7 @@ export const useBookStore = create(
               Duration: {
                 id: 1,
                 days: 2,
-                nose: 1,
+                nose: "Month",
               },
               Time: {
                 id: 1,
@@ -125,7 +258,7 @@ export const useBookStore = create(
       add_drug: (d, id) => {
         set((state) => ({
           ...state,
-          rx: state.rx.map((rx,index) =>
+          rx: state.rx.map((rx, index) =>
             index === id
               ? {
                   ...rx,
@@ -133,11 +266,11 @@ export const useBookStore = create(
                     ...rx.Drug,
                     {
                       id: 8,
-                      drug_name: d.drug_type,
+                      drug_name: d.name,
                       Duration: {
                         id: 1,
                         days: 2,
-                        nose: 1,
+                        nose: "Month",
                       },
                       Time: {
                         id: 1,
@@ -183,7 +316,6 @@ export const useBookStore = create(
           };
         }),
       drug_list_selector: (id) => {
-
         return useBookStore.getState().rx[id];
       },
       rename: (name, id) =>

@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ModeOutlinedIcon from "@mui/icons-material/ModeOutlined";
@@ -41,17 +41,15 @@ interface rx_list {
   Drug: drug[];
 }
 function Drug_list({ id }: { id: number }) {
-  const navi=useNavigate()
+  const navi = useNavigate();
   const selectedDrug = useBookStore((state) => state.drug_list_selector);
   const [fetchedList, setfetchedList] = useState<rx_list | null>(null);
   useEffect(() => {
     setfetchedList(selectedDrug(id));
-  
   }, [id]);
-  const add_drug=()=>{
-  
-  navi("/add_drugs", { state: id });
-  }
+  const add_drug = () => {
+    navi("/add_drugs", { state: id });
+  };
   return (
     <div className="w-full h-full flex justify-center items-center">
       <div className="h-[95%] w-[95%] flex flex-col justify-between items-start ">
@@ -67,7 +65,7 @@ function Drug_list({ id }: { id: number }) {
               style={{ listStyleType: "disc" }}
               className="list-inside w-full flex flex-col"
             >
-              {fetchedList?.Drug.map((drug,index) => (
+              {fetchedList?.Drug.map((drug, index) => (
                 <li key={index} className="flex justify-center items-center">
                   <span className="w-[98%] h-28 flex justify-center items-center flex-col">
                     <div className="h-14 w-full flex flex-col justify-center text-[#4D4D4D] font-medium">
@@ -76,22 +74,22 @@ function Drug_list({ id }: { id: number }) {
                     <div className="h-12 w-full flex justify-start ">
                       <div className="w-5/6 h-1/2 flex">
                         <div className="w-full h-full flex">
-                          <div className="h-full w-[6%] border-r-2 border-[#888888] flex  text-[#888888] font-medium">
-                            {drug.Dose.is_morning ? 1 : 0}-
-                            {drug.Dose.is_afternon ? 1 : 0}-
-                            {drug.Dose.is_evening ? 1 : 0}
+                          <div className="h-full w-16 border-r-2 border-[#888888] flex  text-[#888888] font-medium">
+                            {drug.Dose.morning_dose
+                            }-
+                            {drug.Dose.afternoon_dose}-{drug.Dose.evening_dose}
                           </div>
-                          <div className="h-full w-[20%]  border-r-2 border-[#888888]  flex justify-center text-[#888888] font-medium">
+                          <div className="h-full max-w-48 pr-2 pl-2  border-r-2 border-[#888888]  flex justify-center text-[#888888] font-medium">
                             {drug.Time.time} mins -{" "}
                             {drug.Time.take_type == 1
                               ? "After Food"
                               : "Before Food"}
                           </div>
-                          <div className="h-full w-[20%]  border-r-2 border-[#888888] flex justify-center text-[#888888] font-medium">
+                          <div className="h-full max-w-48 pr-2 pl-2  border-r-2 border-[#888888] flex justify-center text-[#888888] font-medium">
                             {drug.Time.time_type} for {drug.Duration.days}{" "}
                             Day(s)
                           </div>
-                          <div className="h-full w-[10%]  border-r-2 border-[#888888] flex justify-center text-[#888888] font-medium">
+                          <div className="h-full max-w-32 pr-2 pl-2  border-r-2 border-[#888888] flex justify-center text-[#888888] font-medium">
                             {drug.Duration.nose} Qty
                           </div>
                         </div>
@@ -114,9 +112,12 @@ function Drug_list({ id }: { id: number }) {
             )}
 
             <div className="w-full h-14 flex items-center justify-start">
-              <div className="h-full w-[5%] flex justify-center items-center" onClick={()=>{
-                add_drug()
-              }}>
+              <div
+                className="h-full w-[5%] flex justify-center items-center"
+                onClick={() => {
+                  add_drug();
+                }}
+              >
                 <AddCircleIcon sx={{ fontsize: "10px", color: "#007965" }} />
               </div>
               <div className="h-full w-[10%] flex justify-start items-center">

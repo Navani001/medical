@@ -24,7 +24,7 @@ const button = () => {
 function Add_drugs() {
   const location = useLocation();
   const data = location.state || 0;
-  console.log("data",data)
+
  
   const rx_data_selector = useBookStore((state) => state.drug_list_selector);
   const [rx_data, setrx_data] = useState<any>(null);
@@ -32,7 +32,7 @@ function Add_drugs() {
 
     const fetch_data = async () => {
       const temp_data = await rx_data_selector(data);
-      console.log(temp_data)
+     
  
       setrx_data(temp_data);
      
@@ -49,7 +49,7 @@ function Add_drugs() {
       <div className="w-full h-[90%]  flex items-center justify-center">
         <div className="w-[95%] h-[91%] ">
           <div className="w-full h-[7%]  border-2 border-gr rounded-lg flex justify-between">
-            <FreeSoloCreateOption id={data}/>
+            <FreeSoloCreateOption id={data} selected_search_type={selected_search_type}/>
 
             {/* <input
               type="text"
@@ -83,7 +83,7 @@ function Add_drugs() {
             Selected Drugs (3)
           </div>
           <div className="w-full h-[87%] ">
-            <BasicTable id={data}/>
+              <BasicTable id={data} selected_search_type={selected_search_type}/>
           </div>
         </div>
       </div>

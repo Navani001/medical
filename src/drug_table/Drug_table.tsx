@@ -12,6 +12,9 @@ import no_data from "../assets/Group 5623.png";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Update from "../dialog/update.tsx";
+import Dose from "../component/Dose.tsx";
+import Time from "../component/Time.tsx";
+import Duration from "../component/Duration";
 // Define interfaces for the data structure
 interface Dose {
   id: number;
@@ -44,30 +47,36 @@ interface Drug {
   Dose: Dose;
 }
 
-
 // Column helper for table configuration
 const columnHelper = createColumnHelper<Drug>();
 
-
-
-export default function BasicTable({ id }: { id: number }) {
+export default function BasicTable({
+  id,
+  selected_search_type,
+}: {
+  id: number;
+  selected_search_type: number;
+}) {
+  const [trigger, settrigger] = React.useState(0);
   const rx_selector = useBookStore((state) => state.drug_list_selector);
-  const rerender = useBookStore((state) => state.rx);
-  const [show_dose,setshow_dose]=React.useState<Boolean>(false)
-  const [show_t,setshow_t]=React.useState<Boolean>(false)
+  const delete_drug = useBookStore((state) => state.delete);
 
-  const [show_duration,setshow_duration]=React.useState<Boolean>(false)
+  const [SelectedDrug, setSelectedDrug] = React.useState(-1);
+  const rerender = useBookStore((state) => state.rx);
+  const [show_dose, setshow_dose] = React.useState<Boolean>(false);
+  const [show_t, setshow_t] = React.useState<Boolean>(false);
+
+  const [show_duration, setshow_duration] = React.useState<Boolean>(false);
 
   const [data, _setData] = React.useState<Drug[]>([]);
 
   React.useEffect(() => {
+    console.log("rerender");
     const fetchData = async () => {
       try {
         const drugList = await rx_selector(id); // Replace with actual Rx ID
-
-        if (drugList?.Drug) {
-          _setData(drugList.Drug);
-        }
+        console.log(drugList.Drug);
+        _setData([...drugList.Drug]);
       } catch (error) {
         console.error("Error fetching drug list:", error);
       }
@@ -75,6 +84,9 @@ export default function BasicTable({ id }: { id: number }) {
 
     fetchData();
   }, [rx_selector, rerender]);
+  React.useEffect(() => {
+    console.log(data);
+  }, [_setData, data]);
   const columns = [
     columnHelper.accessor("drug_name", {
       id: "drug_name",
@@ -87,12 +99,16 @@ export default function BasicTable({ id }: { id: number }) {
         const dose = info.getValue() as Dose;
         return (
           <div className="text-[#4D4D4D] flex font-medium text-base">
-            {dose.is_morning ? <span>1</span> : <span>0</span>}-
-            {dose.is_afternon ? <span>1</span> : <span>0</span>}-
-            {dose.is_evening ? <span>1</span> : <span>0</span>}{" "}
-            <span className="flex justify-center w-8 items-center pr-3 text-p_green" onClick={()=>{
-              setshow_dose(true)
-            }}>
+            {dose.morning_dose
+            }-{dose.afternoon_dose}
+            -{dose.evening_dose}{" "}
+            <span
+              className="flex justify-center w-8 items-center pr-3 text-p_green"
+              onClick={() => {
+                setSelectedDrug(info.row.original.id);
+                setshow_dose(true);
+              }}
+            >
               <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
             </span>
           </div>
@@ -110,9 +126,13 @@ export default function BasicTable({ id }: { id: number }) {
             <span className="text-[#4D4D4D] flex font-medium">
               {time.time} min, {convertToTitleCase(time.time_type)},
               {convertToTitleCase(time.take_type ? "before" : "after")} Food{" "}
-              <span className="flex justify-center w-8 items-center pr-3 text-p_green"  onClick={()=>{
-              setshow_t(true)
-            }}>
+              <span
+                className="flex justify-center w-8 items-center pr-3 text-p_green"
+                onClick={() => {
+                  setSelectedDrug(info.row.original.id);
+                  setshow_t(true);
+                }}
+              >
                 <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
               </span>
             </span>
@@ -121,17 +141,25 @@ export default function BasicTable({ id }: { id: number }) {
       },
     }),
     columnHelper.accessor("Duration", {
-      header: () => <span className="w-28 font-bold text-sm">Duration & Quantity</span>,
+      header: () => (
+        <span className="w-28 font-bold text-sm">Duration & Quantity</span>
+      ),
       cell: (info) => {
         const duration = info.getValue() as Duration;
+
         return (
           <div className="flex text-base">
             <span className="text-[#4D4D4D] font-medium">
               {duration.days} days, {duration.nose} nos
             </span>{" "}
-            <span className="flex justify-center w-8 items-center pr-3 text-p_green"  onClick={()=>{
-              setshow_duration(true)
-            }}> 
+            <span
+              className="flex justify-center w-8 items-center pr-3 text-p_green"
+              onClick={() => {
+                setSelectedDrug(info.row.original.id);
+                
+                setshow_duration(true);
+              }}
+            >
               <ArrowForwardIosIcon sx={{ fontSize: "15px" }} />
             </span>
           </div>
@@ -140,10 +168,17 @@ export default function BasicTable({ id }: { id: number }) {
     }),
     columnHelper.accessor("id", {
       header: () => <span></span>,
-      cell: () => {
+      cell: (info) => {
         return (
           <div className="flex text-lg">
-            <span className="flex justify-center items-center p-2  rounded-full text-[#F44F5A] bg-[#FEEDEE] ">
+            <span
+              className="flex justify-center items-center p-2  rounded-full text-[#F44F5A] bg-[#FEEDEE] "
+              onClick={() => {
+                setSelectedDrug(info.row.original.id);
+              
+                delete_drug(id,info.row.original.id)
+              }}
+            >
               <DeleteIcon sx={{ fontSize: "20px" }} />
             </span>
           </div>
@@ -199,15 +234,63 @@ export default function BasicTable({ id }: { id: number }) {
           </tbody>
         </table>
       )}
-      {
-        show_dose && <Update set_show_notu={setshow_dose} header="Dose" h={"320px"}/>
-      }
-      {
-        show_t && <Update set_show_notu={setshow_t} header="Time, Frequency & When" h={"500px"}/>
-      }
-      {
-        show_duration && <Update set_show_notu={setshow_duration} header="Duration & Qty" h={"270px"}/>
-      }
+      {show_dose && (
+        <Update
+          trigger={trigger}
+          settrigger={settrigger}
+          set_show_notu={setshow_dose}
+          header="Dose"
+          h={"320px"}
+          body_dialog={
+            <Dose
+              id={id}
+              SelectedDrug={SelectedDrug}
+              trigger={trigger}
+              setshow_dose={setshow_dose}
+            ></Dose>
+          }
+          w="450px"
+          SelectedDrug={SelectedDrug}
+        />
+      )}
+      {show_t && (
+        <Update
+          trigger={trigger}
+          settrigger={settrigger}
+          set_show_notu={setshow_t}
+          header="Time, Frequency & When"
+          h={"500px"}
+          body_dialog={
+            <Time
+              id={id}
+              SelectedDrug={SelectedDrug}
+              trigger={trigger}
+              setshow_dose={setshow_t}
+            ></Time>
+          }
+          w="650px"
+          SelectedDrug={SelectedDrug}
+        />
+      )}
+      {show_duration && (
+        <Update
+          trigger={trigger}
+          settrigger={settrigger}
+          set_show_notu={setshow_duration}
+          header="Duration & Qty"
+          h={"470px"}
+          body_dialog={
+            <Duration
+              id={id}
+              SelectedDrug={SelectedDrug}
+              trigger={trigger}
+              setshow_dose={setshow_duration}
+            ></Duration>
+          }
+          w="600px"
+          SelectedDrug={SelectedDrug}
+        />
+      )}
     </div>
   );
 }
