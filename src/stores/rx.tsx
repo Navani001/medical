@@ -1,5 +1,4 @@
 import axios from "axios";
-import { merge } from "lodash";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -59,50 +58,110 @@ interface entire_Rx_data {
   time_selector: (rx_id: number, dose_id: number) => any;
   duration_selector: (rx_id: number, dose_id: number) => any;
   delete: (rx_id: number, dose_id: number) => void;
+  adddrugfromrx: (rx_id: number, selectedrx_id: number) => void;
 }
 export const useBookStore = create(
   persist<entire_Rx_data>(
     (set) => ({
+      adddrugfromrx: (rx_id, selectedrx_id) => {
+        set((state) => {
+          const selectedRx = state.rx.find((rx) => rx.id === selectedrx_id);
+
+          if (!selectedRx) return state; // if selected Rx is not found, return current state
+
+          const newDrugs = [...selectedRx.Drug]; // get the drugs from the selected Rx
+          axios.post("http://localhost:5000/drugs/add_rxtorx", {
+            rx_id: useBookStore.getState().rx[rx_id].id,
+            drugs: newDrugs,
+          });
+          // Update the Rx with the new drugs
+          const updatedRx = state.rx.map((item, index) =>
+            index !== rx_id
+              ? item
+              : {
+                  ...item,
+                  Drug: [...item.Drug, ...newDrugs], // append the drugs from the selected Rx
+                }
+          );
+
+          return {
+            ...state,
+            rx: updatedRx,
+          };
+        });
+      },
       rx_backend: () => {
         axios
           .get("http://localhost:5000/drugs/all_rx")
           .then(function (response) {
-            const merged_array: any = [];
-            response.data.map((item: any) => {
+            console.log(response.data);
+            let merged_array: any = [];
+            response.data.map((item: any) =>
               merged_array.push({
                 id: item.id,
                 name: item.name,
-                no_of_drug: 0,
                 isactive: item.is_active,
-                Drug: [],
-              });
-            });
+                no_of_drug: item.rx_drugs.length,
+                Drug: item.rx_drugs.map((drugs: any) => {
+                  return {
+                    id: drugs.drug.id,
+                    drug_name: drugs.drug.name,
+                    Duration: {
+                      id: 1,
+                      days: 2,
+                      nose: "Month",
+                    },
+                    Time: {
+                      id: 1,
+                      time: 1,
+                      time_type: "daily",
+                      take_type: 2,
+                    },
+                    Dose: {
+                      id: 1,
+                      is_morning: true,
+                      is_afternon: false,
+                      is_evening: false,
+                      morning_dose: 1,
+                      evening_dose: 0,
+                      afternoon_dose: 0,
+                    },
+                  };
+                }),
+              })
+            );
             console.log(merged_array);
-            // set({
-            //   rx: merged_array,
-            // });
+            set({ rx: merged_array });
+
+            // console.log(response.data);
           });
       },
       delete: (rx_id, dose_id) => {
+        const drugIndex = useBookStore
+          .getState()
+          .rx[rx_id].Drug.findIndex(
+            (currentDrug) => currentDrug.id === dose_id
+          );
+        axios
+          .post("http://localhost:5000/drugs/delete", {
+            drug_id: dose_id,
+            rx_id: useBookStore.getState().rx[rx_id].id,
+          })
+          .then((res) => {
+            console.log("succes");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         console.log(useBookStore.getState().rx);
-        console.log(
-          "dose ",
-          useBookStore.getState().rx.map((rx, index) =>
-            index === rx_id
-              ? {
-                  ...rx,
-                  Drug: rx.Drug.filter((item) => item.id !== dose_id),
-                }
-              : rx
-          )
-        );
+        axios.post("");
         set((state) => ({
           ...state,
           rx: state.rx.map((rx, index) =>
             index === rx_id
               ? {
                   ...rx,
-                  no_of_drug:rx.no_of_drug-1,
+                  no_of_drug: rx.no_of_drug - 1,
                   Drug: rx.Drug.filter((item) => item.id !== dose_id),
                 }
               : rx
@@ -267,15 +326,13 @@ export const useBookStore = create(
       add_rx: (rx: string) => {
         let id = -1;
         axios
-          .post("http://localhost:5000/drugs/add_rx", {
-            name: rx,
+          .post("http://localhost:5000/drugs/add_rx", { name: rx })
+          .then((res) => {
+            id = res.data.id;
+            console.log("success");
           })
-          .then(function (response) {
-            console.log(response.data.id);
-            id = response.data.id;
-          })
-          .catch(function (error) {
-            console.log(error);
+          .catch((err) => {
+            console.log(err);
           });
         const rx_create = {
           id: id,
@@ -292,18 +349,21 @@ export const useBookStore = create(
       },
       add_drug: (d, id) => {
         axios
-          .post("http://localhost:5000/drugs/add_drug_rx/" + id, {
-            drug_id: d.id,
-            no_of_days: 0,
-            quantity: 0,
-            time_to_take: 1,
-            drug_time: 1,
-            comsumption_type_id: 1,
-            comsumption_day_type_id: 1,
-          })
+          .post(
+            "http://localhost:5000/drugs/add_drug_rx/" +
+              useBookStore.getState().rx[id].id,
+            {
+              drug_id: d.id,
+              no_of_days: 1,
+              quantity: 1,
+              time_to_take: 1,
+              drug_time: 1,
+              comsumption_day_type_id: 1,
+              comsumption_type_id: 1,
+            }
+          )
           .then(function (response) {
-            console.log(response.data);
-            
+            console.log(response);
           })
           .catch(function (error) {
             console.log(error);
@@ -372,6 +432,16 @@ export const useBookStore = create(
       },
       rename: (name, id) =>
         set((state) => {
+          axios
+            .post("http://localhost:5000/drugs/rename_rx/" + id, {
+              name: name,
+            })
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
           const rxIndex = state.rx.findIndex(
             (currentRx) => currentRx.id === id
           );

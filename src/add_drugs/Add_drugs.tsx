@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Rxheader from "../component/Rxheader";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -6,6 +6,7 @@ import BasicTable from "../drug_table/Drug_table";
 import { useBookStore } from "../stores/rx";
 
 import FreeSoloCreateOption from "../component/Autocomplte.tsx";
+import { drug } from "../stores/drug.tsx";
 
 const button = () => {
   const navi = useNavigate();
@@ -27,6 +28,8 @@ function Add_drugs() {
 
  
   const rx_data_selector = useBookStore((state) => state.drug_list_selector);
+  const drug_backend = drug((state) => state.drug_backend);
+
   const [rx_data, setrx_data] = useState<any>(null);
   React.useEffect(() => {
 
@@ -35,12 +38,14 @@ function Add_drugs() {
      
  
       setrx_data(temp_data);
-     
     };
     fetch_data();
   }, [rx_data_selector]);
   const [selected_search_type, set_selected_search_type] = useState(0);
   const Search = ["All", "Drugs", "Rx Group"];
+  useEffect(()=>{
+    drug_backend()
+  },[])
 
   return (
     <div className="w-full h-full flex flex-col justify-between items-center ">

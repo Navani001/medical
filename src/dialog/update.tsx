@@ -73,7 +73,7 @@ export default function Update({
                 body_dialog
               }
             </div>
-            <div className="w-full h-20 flex justify-center items-center border-t-2 border-gr">
+            <div className="w-full h-16 flex justify-center items-center border-t-2 border-gr">
               <div className="h-[65%] w-[95%] flex justify-end">
                 <div className="h-full w-2/6 flex justify-between items-center">
                   <div

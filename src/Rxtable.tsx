@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Rxheader from "./component/Rxheader";
 import SearchIcon from "@mui/icons-material/Search";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -79,16 +79,14 @@ function Rxtable() {
   const [filter, setfilter] = useState<string>("");
   const add_rx = (name: string) => {
     const id = add_r(name);
-   
-    Navigate("/add_drugs", { state: id });
+
+    // Navigate("/", { state: id });
   };
 
   const handlefilter = async () => {
- 
     const filtered_rx_list: any = await rx_list.filter((rx) =>
       rx.name.toLowerCase().includes(filter.toLowerCase())
     );
-   
     setfilteredrx(filtered_rx_list);
   };
   const handleSearchFilter = async (e: any) => {
@@ -115,9 +113,9 @@ function Rxtable() {
       setfilteredrx(rx_list);
     }
   }, [filter, setfilter]);
-  useEffect(()=>{
-    add_backend()
-  },[])
+  useEffect(() => {
+    add_backend();
+  }, []);
 
   return (
     <div className="h-full w-full ">
@@ -157,7 +155,7 @@ function Rxtable() {
               </div>
             </div>
             <div className="w-full h-[86%] overflow-y-scroll scrollbar-width-none">
-              {filteredrx.map((rx:any, index:any) => (
+              {filteredrx.map((rx: any, index: any) => (
                 <div
                   key={index}
                   className={
@@ -197,7 +195,9 @@ function Rxtable() {
                         set_show_notu(true);
                       }}
                     >
-                      <CalendarViewWeekIcon></CalendarViewWeekIcon>
+                      <CalendarViewWeekIcon
+                        sx={{ color: "#4D4D4D" }}
+                      ></CalendarViewWeekIcon>
                     </div>
                     <div className="h-full w-[10%] flex justify-center items-center">
                       <UnstyledSwitchIntroduction

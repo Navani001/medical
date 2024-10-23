@@ -9,8 +9,8 @@ const filter = createFilterOptions();
 interface drug_list {
   id: number;
   name: string;
-  isactive: boolean;
-  drug_type: "tablet" | "sirap";
+ 
+  type: "Drug" | "rx group";
 }
 
 export default function FreeSoloCreateOption({
@@ -28,11 +28,21 @@ export default function FreeSoloCreateOption({
 
   const drug_data = drug((state) => state.drug_list);
   const add_drug = useBookStore((state) => state.add_drug);
-  const rx_list = useBookStore((state) => state.rx);
+  const add_rx = useBookStore((state) => state.adddrugfromrx);
 
-  const handleSelectionChange = (event: any, value: drug_list) => {
+  // const drug_backend = drug((state) => state.drug_backend);
+  const rx_list = useBookStore((state) => state.rx);
+React.useEffect(()=>{
+  // drug_backend()
+},[])
+  const handleSelectionChange = (event: any, value: any) => {
     console.log(value,id)
-    add_drug(value, id);
+    if(value.type=="Drug"){
+      add_drug(value, id);
+    }
+    else{
+      add_rx(id,value.id)
+    }
     settextfiels_value("");
     event.target.value = "";
     setValue(null);
